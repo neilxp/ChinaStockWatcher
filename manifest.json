@@ -1,0 +1,11 @@
+{
+  "name": "中国股市观察",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "浏览器工具栏看股票",
+  "browser_action": {
+    "default_icon": "icon.gif",
+	"default_popup": "nds.htm"
+  },
+  "content_security_policy": "script-src self 'unsafe-eval' http://hq.sinajs.cn ; object-src 'self'"
+}
