@@ -329,19 +329,28 @@ var script_updater = {
 		//return ( h < 9 || h>15 || (h == 15&& m>10));
 		return false;
 	},
-    load_data_r:function(url,idname)
-    {
-        if( this.should_stop_update() ) {
+	load_data_r:function(url,idname)
+	{
+		if( this.should_stop_update() ) {
 			this.stop_refresh();
 		}
-        var old_script=doc_element(idname);
-        if(old_script){old_script.parentNode.removeChild(old_script);};
-        var new_script=create_element("script");
-        new_script.type="text/javascript";
-        new_script.src=url;
-        new_script.id=idname;
-        append(document.body, new_script);
-    }
+		//var old_script=doc_element(idname);
+		//if(old_script){old_script.parentNode.removeChild(old_script);};
+		//var new_script=create_element("script");
+		//new_script.type="text/javascript";
+		//new_script.src=url;
+		//new_script.id=idname;
+		//append(document.body, new_script);
+		xmlhttp = new XMLHttpRequest();
+
+		xmlhttp.onload = function(e){
+			var js = e.target.responseText;
+			console.log(js);
+			eval(js);
+		}
+		xmlhttp.open("GET",url,true);
+		xmlhttp.send(null);
+	}
 }
 
 var g_table;
@@ -367,9 +376,11 @@ function init(){
 	g_table.add_rows_r(g_current_board.length);
 	g_table.add_link_r(g_current_board, function(list, i){return list[i];});
 
-    timer = setInterval("script_updater.load_data_r(AppConf.url+csv.array_to_string(g_current_board),'vsdata');", AppConf.Interval_2s);
+	timer = setInterval("script_updater.load_data_r(AppConf.url+csv.array_to_string(g_current_board),'vsdata');", AppConf.Interval_2s);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
   init();
 });
+
+//location.reload(true)
