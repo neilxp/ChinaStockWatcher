@@ -7,6 +7,7 @@ var board_a =new Array(
 	"sz002378",
 	"sz002648",
 	"sh600259",
+	"sh601555",
 	"sz002287",
 	"sz002114",
 	"sz000630",
@@ -122,11 +123,11 @@ var g_sort_changed = false;
 function toggle_sort_r(){
 	g_sort++; if (g_sort == 3) g_sort = 0;
 	g_sort_changed = true;
-	update_stock_list_table();
 	my_cookie.set("sort", g_sort, 1);
 }
 function change_board_r(board_short_name){
 	var  board;
+  console.log('Change board to ' + board_short_name);
 	eval("board = board_"+board_short_name );
 
 	g_table.del_rows_r();
@@ -294,29 +295,6 @@ function stock_table(id){
 		}
 	};
 }
-function update_stock_list_table(){
-	var idname="stock_list_table";
-	var table=doc_element(idname);
-	var stock_info_array = new Array();
-	
-	for (var x in g_current_board){
-		var stock_info = new Array(g_current_board[x] );
-		var str_info;
-		var arr_info;
-		eval("str_info = hq_str_"+g_current_board[x] );
-		arr_info = csv.string_to_array(str_info);
-		var change = calc_change_in_percent(arr_info);
-		arr_info.push(change);
-		stock_info.push( arr_info);
-		stock_info.push( change);
-		stock_info_array.push(stock_info);
-	}
-
-	g_table.update_contents_r(stock_info_array, g_sort, g_sort_changed);
-	g_sort_changed = false;
-
-	return true;
-}
 var script_updater = {
 	stop_refresh: function()
 	{
@@ -345,7 +323,26 @@ var script_updater = {
 
 		xmlhttp.onload = function(e){
 			var js = e.target.responseText;
-			console.log(js);
+      js = js + 'function update_stock_list_table(){' + 
+        '	var idname="stock_list_table";' +
+        '	var table=doc_element(idname);' +
+        '	var stock_info_array = new Array();' +
+        '	for (var x in g_current_board){' +
+        '		var stock_info = new Array(g_current_board[x] );' +
+        '		var str_info;' +
+        '		var arr_info;' +
+        '		eval("str_info = hq_str_"+g_current_board[x] );' +
+        '		arr_info = csv.string_to_array(str_info);' +
+        '		var change = calc_change_in_percent(arr_info);' +
+        '		arr_info.push(change);' +
+        '		stock_info.push( arr_info);' +
+        '		stock_info.push( change);' +
+        '		stock_info_array.push(stock_info);' +
+        '	}' +
+        '	g_table.update_contents_r(stock_info_array, g_sort, g_sort_changed);' +
+        '	g_sort_changed = false;' +
+        '	return true;' +
+        '}';
 			eval(js);
 		}
 		xmlhttp.open("GET",url,true);
@@ -368,8 +365,8 @@ function load_state(){
 	}
 }
 function init(){
-	var g_table = new stock_table("stock_list_table");
-	var g_popup = new popup("hoverpopup");
+	g_table = new stock_table("stock_list_table");
+	g_popup = new popup("hoverpopup");
 
 	clearInterval(timer);
 	load_state();
@@ -381,6 +378,12 @@ function init(){
 
 document.addEventListener('DOMContentLoaded', function () {
   init();
+  
+	doc_element('change_board_a').addEventListener('click', function(){ change_board_r('a'); });
+	doc_element('change_board_b').addEventListener('click', function(){ change_board_r('b'); });
+	doc_element('change_board_c').addEventListener('click', function(){ change_board_r('large_capital'); });
+	doc_element('change_board_d').addEventListener('click', function(){ change_board_r('startup'); });
+	doc_element('sort_toggler').addEventListener('click', function(){ toggle_sort_r(); });
 });
 
 //location.reload(true)
