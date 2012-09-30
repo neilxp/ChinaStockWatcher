@@ -1,8 +1,9 @@
-Chinese stock watching on web browser
+Introduction
+============
 
-This is a static web page, just open it in your browser
+Extension intent for China stock watching on google chrome
 
-Modify the stock list with any text editor
+Modify the stock list logic.js with any text editor
 
-![screenshot](screenshot.png "Screenshot")
+![screenshot](https://raw.github.com/neilxp/ChinaStockWatcher/master/screenshot.png "Screenshot")
 
